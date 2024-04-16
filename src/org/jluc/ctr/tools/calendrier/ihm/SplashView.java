@@ -8,17 +8,17 @@ import javafx.scene.layout.VBox;
 
 public class SplashView extends VBox {
 
-    private static final String SPLASH_IMAGE_PATH = "./resources/images/logo.png";
+    public static final String SPLASH_IMAGE_PATH = "./resources/images/logo.png";
     private ImageView mImageView;
     private ProgressBar mProgressBar = new ProgressBar();
 
     public SplashView() {
-            this.setBackground(Background.EMPTY);
-            mImageView = new ImageView(SPLASH_IMAGE_PATH);
-            this.getChildren().add(mImageView);
-            this.getChildren().add(mProgressBar);
-            this.setAlignment(Pos.CENTER);
-        }
+        this.setBackground(Background.EMPTY);
+        mImageView = new ImageView(SPLASH_IMAGE_PATH);
+        this.getChildren().add(mImageView);
+        this.getChildren().add(mProgressBar);
+        this.setAlignment(Pos.CENTER);
+    }
 
     public void updateProgress(double value) {
         mProgressBar.setProgress(value);

@@ -1,4 +1,4 @@
-package org.jluc.ctr.tools.calendrier.tools.forms;
+package org.jluc.ctr.tools.calendrier.tools.google.forms;
 
 import java.io.File;
 import java.io.FileReader;
@@ -18,8 +18,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jluc.ctr.tools.calendrier.ihm.CalendrierCTRApplication;
 import org.jluc.ctr.tools.calendrier.model.Evenement;
 
@@ -58,8 +58,8 @@ public class FormsAccessService {
             reader = new FileReader(csvTempFilePath, StandardCharsets.UTF_8);
             CSVFormat csvFormat = CSVFormat.DEFAULT.builder().setHeader().setAllowMissingColumnNames(true).setSkipHeaderRecord(true).build();
             CSVParser records = csvFormat.parse(reader);
-            mLogger.debug(" ==> Headers : " + records.getHeaderMap().toString());
-            int i = 1;
+            // mLogger.debug(" ==> Headers : " +
+            // records.getHeaderMap().toString());
             for (CSVRecord record : records) {
                 // Liste de Headers : {Horodateur=0, Adresse e-mail=1, Contact
                 // (mails secondaire)=2, Autre contact (si besoin)=3,
@@ -67,7 +67,6 @@ public class FormsAccessService {
                 // (inclus)=6, Demandeur=7, Demandeur (si nouveau)=8, En
                 // partenariat avec=9, Lieu=10, Structure support=11, Nombre de
                 // stagiaires / candidats (prévisionnel)=12, =18}
-                mLogger.debug(" Record " + i + " : " + record.get(0));
                 try {
                     Date dateDemande = DATE_TIME_FORMAT.parse(record.get(0));
                     Date dateDebut = DATE_FORMAT.parse(record.get(5));
@@ -79,12 +78,10 @@ public class FormsAccessService {
                     String mail = record.get(1);
                     String organisateur = record.get(11);
 
-                    mLogger.debug("Date Demande = " + dateDemande + " - Date Debut = " + dateDebut + " - Date Fin = " + dateFin + " - " + activite);
-                    events.add(new Evenement(dateDemande, dateDebut, dateFin, activite, demandeur, partenaire, mail, lieu, organisateur));
+                    events.add(new Evenement(dateDemande, dateDebut, dateFin, activite, demandeur, partenaire, mail, lieu, organisateur, ""));
                 } catch (ParseException e) {
                     mLogger.error("Pb durant le parsing des évènements ==> On passe au suivant : ", e);
                 }
-                i++;
             }
         } catch (IOException e) {
             mLogger.error("Problème de lecture du CSV...", e);

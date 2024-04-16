@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javafx.application.Application;
 import javafx.application.Preloader.ProgressNotification;
@@ -21,92 +21,93 @@ import javafx.stage.Stage;
 
 public class CalendrierCTRApplication extends Application {
 
-	private Scene mScene;
-	private Stage mStage;
-	private CalendrierCTRController mCtrl;
+    private Scene mScene;
+    private Stage mStage;
+    private CalendrierCTRController mCtrl;
 
-	private Logger mLogger = LogManager.getLogger(CalendrierCTRApplication.class);
+    private Logger mLogger = LogManager.getLogger(CalendrierCTRApplication.class);
 
-	public static final ResourceBundle DICO_PROPERTIES = ResourceBundle.getBundle("resources/dicoCTR",
-			Locale.getDefault());
-	public static final String APPLICATION_TITLE = DICO_PROPERTIES.getString("app.title");// "Gestion
-																							// des
-																							// Stages
-																							// et
-																							// Exaemens
-																							// de
-																							// la
-																							// CTR
-																							// by
-																							// JLuc";
+    public static final ResourceBundle DICO_PROPERTIES = ResourceBundle.getBundle("resources/dicoCTR", Locale.getDefault());
+    public static final String APPLICATION_TITLE = DICO_PROPERTIES.getString("app.title");// "Gestion
+                                                                                          // des
+                                                                                          // Stages
+                                                                                          // et
+                                                                                          // Exaemens
+                                                                                          // de
+                                                                                          // la
+                                                                                          // CTR
+                                                                                          // by
+                                                                                          // JLuc";
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		LogManager.getLogger(CalendrierCTRApplication.class).debug("Démarrage de l'application.");
-//		for (int i = 0; i < 24; i++) {
-//			LogManager.getLogger(CalendrierCTRApplication.class).debug("uuid : " + UUID.randomUUID());
-//		}
-		System.setProperty("javafx.preloader", SplashScreenLoader.class.getCanonicalName());
-//		LauncherImpl.launchApplication(CalendrierCTRApplication.class, SplashScreenLoader.class, args);
-		launch(args);
-	}
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        LogManager.getLogger(CalendrierCTRApplication.class).debug("Démarrage de l'application.");
+        // for (int i = 0; i < 24; i++) {
+        // LogManager.getLogger(CalendrierCTRApplication.class).debug("uuid : "
+        // + UUID.randomUUID());
+        // }
+        System.setProperty("javafx.preloader", SplashScreenLoader.class.getCanonicalName());
+        // LauncherImpl.launchApplication(CalendrierCTRApplication.class,
+        // SplashScreenLoader.class, args);
+        launch(args);
+    }
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		mLogger.debug("Démarrage de l'application");
-		mStage = primaryStage;
-		// Chargement du FXML
-		final URL url = getClass().getResource("CalendrierCTR.fxml");
-		// Création du loader.
-		final FXMLLoader fxmlLoader = new FXMLLoader(url);
-		// Chargement du FXML.
-		try {
-			mScene = new Scene(fxmlLoader.load()/* , Color.TRANSPARENT */);
-			mCtrl.setFXController((CalendrierCTRFXController) fxmlLoader.getController());
-			mCtrl.initIHM();
-		} catch (IOException e) {
-			mLogger.error("Erreur de chargement du fichier FXML : " + url.getPath(), e);
-		}
-		// mScene.getStylesheets().add("resources/applicationview.css");
-		mScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent ke) {
-				if (ke.getCode() == KeyCode.ESCAPE) {
-					System.out.println("Key Pressed: " + ke.getCode());
-					mStage.close();
-				}
-			}
-		});
-		// mStage.setResizable(false);
-		// mStage.initStyle(StageStyle.TRANSPARENT);
-		mStage.setScene(mScene);
-		mStage.setTitle(CalendrierCTRApplication.APPLICATION_TITLE);
-		mStage.show();
-		// mCtrl.initEvenementsListe();
-		notifyPreloader(new ProgressNotification(1));
-		this.notifyPreloader(new StateChangeNotification(null));
-	}
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        mLogger.debug("Démarrage de l'application");
+        mStage = primaryStage;
+        // Chargement du FXML
+        final URL url = getClass().getResource("CalendrierCTR.fxml");
+        // Création du loader.
+        final FXMLLoader fxmlLoader = new FXMLLoader(url);
+        // Chargement du FXML.
+        try {
+            mScene = new Scene(fxmlLoader.load()/* , Color.TRANSPARENT */);
+            mCtrl.setFXController((CalendrierCTRFXController) fxmlLoader.getController());
+            mCtrl.initIHM();
+        } catch (IOException e) {
+            mLogger.error("Erreur de chargement du fichier FXML : " + url.getPath(), e);
+            throw e;
+        }
+        // mScene.getStylesheets().add("resources/applicationview.css");
+        mScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent ke) {
+                if (ke.getCode() == KeyCode.ESCAPE) {
+                    System.out.println("Key Pressed: " + ke.getCode());
+                    mStage.close();
+                }
+            }
+        });
+        // mStage.setResizable(false);
+        // mStage.initStyle(StageStyle.TRANSPARENT);
+        mStage.setScene(mScene);
+        mStage.setTitle(CalendrierCTRApplication.APPLICATION_TITLE);
+        mStage.show();
+        // mCtrl.initEvenementsListe();
+        notifyPreloader(new ProgressNotification(1));
+        this.notifyPreloader(new StateChangeNotification(null));
+    }
 
-	@Override
-	public void init() {
-		try {
-			mCtrl = new CalendrierCTRController();
-		} catch (ClassNotFoundException | SQLException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		notifyPreloader(new ProgressNotification(0));
-		notifyPreloader(new ProgressNotification(0.5));
-		mCtrl.init(this);
-		notifyPreloader(new ProgressNotification(0.8));
-	}
+    @Override
+    public void init() {
+        try {
+            mCtrl = new CalendrierCTRController();
+        } catch (ClassNotFoundException | SQLException | IOException e) {
+            mLogger.error("Erreur dans le controller", e);
+        }
+        notifyPreloader(new ProgressNotification(0));
+        notifyPreloader(new ProgressNotification(0.5));
+        mCtrl.init(this);
+        notifyPreloader(new ProgressNotification(0.8));
+    }
 
-	@Override
-	public void stop() throws Exception {
-		// Ici on va sauvegarder la BDD
-		mCtrl.saveBDD();
-	}
+    @Override
+    public void stop() throws Exception {
+        // Ici on va sauvegarder la BDD
+        mCtrl.saveBDD();
+    }
 
 }
