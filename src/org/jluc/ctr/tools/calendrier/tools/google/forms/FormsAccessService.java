@@ -31,6 +31,8 @@ public class FormsAccessService {
     private static SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
     private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
+    private static List<String> ERRORS = new ArrayList<String>();
+
     public static List<Evenement> getEventsFromGoogleForms() {
         String csvTempFilePath = "./forms.csv";
         File csvTempFile = new File(csvTempFilePath);
@@ -80,7 +82,9 @@ public class FormsAccessService {
 
                     events.add(new Evenement(dateDemande, dateDebut, dateFin, activite, demandeur, partenaire, mail, lieu, organisateur, ""));
                 } catch (ParseException e) {
-                    mLogger.error("Pb durant le parsing des évènements ==> On passe au suivant : ", e);
+                    mLogger.error(
+                            "Pb durant le parsing des évènements : " + record.get(4) + " demande par " + (record.get(7).isEmpty() ? record.get(8) : record.get(7)) + " ==> On passe au suivant : ", e);
+                    ERRORS.add(record.get(4) + " demande par " + (record.get(7).isEmpty() ? record.get(8) : record.get(7)));
                 }
             }
         } catch (IOException e) {
@@ -109,5 +113,9 @@ public class FormsAccessService {
         }
 
         return events;
+    }
+
+    public static List<String> getErrors() {
+        return ERRORS;
     }
 }

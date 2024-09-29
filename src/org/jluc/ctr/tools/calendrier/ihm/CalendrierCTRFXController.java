@@ -1,10 +1,14 @@
 package org.jluc.ctr.tools.calendrier.ihm;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +26,10 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
@@ -148,13 +155,41 @@ public class CalendrierCTRFXController {
         mDemandeurColumn.setCellValueFactory(new PropertyValueFactory<Evenement, String>("demandeurFX"));
         mLieuColumn.setCellValueFactory(new PropertyValueFactory<Evenement, String>("lieuFX"));
         mDateDebutColumn.setCellValueFactory(new PropertyValueFactory<Evenement, String>("dateDebutFX"));
+        mDateDebutColumn.setComparator(new Comparator<String>() {
+
+            @Override
+            public int compare(String t, String t1) {
+                try {
+                    SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+                    Date d1 = format.parse(t);
+                    Date d2 = format.parse(t1);
+                    return Long.compare(d1.getTime(), d2.getTime());
+                } catch (ParseException p) {
+                    p.printStackTrace();
+                }
+                return -1;
+            }
+        });
         mDateFinColumn.setCellValueFactory(new PropertyValueFactory<Evenement, String>("dateFinFX"));
+        mDateFinColumn.setComparator(new Comparator<String>() {
+
+            @Override
+            public int compare(String t, String t1) {
+                try {
+                    SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+                    Date d1 = format.parse(t);
+                    Date d2 = format.parse(t1);
+                    return Long.compare(d1.getTime(), d2.getTime());
+                } catch (ParseException p) {
+                    p.printStackTrace();
+                }
+                return -1;
+            }
+        });
         mEventEditorPane.setVisible(false);
 
         mEventTableView.setItems(sortedEvents);
 
-        // ObjectProperty<Evenement> criticalEvenement = new
-        // SimpleObjectProperty<>();
         mEventTableView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
                 if (mEventTableView.getSelectionModel().getSelectedItem() != null) {
@@ -237,8 +272,30 @@ public class CalendrierCTRFXController {
         });
     }
 
+    public void manageErrors() {
+        // Gestion des erreurs lors du chargement
+        if (!mController.getModel().ERRORS.isEmpty()) {
+            // Il y a des errerus
+            String msg = "Problème durant la lecture des évènements :";
+            for (String erreur : mController.getModel().ERRORS) {
+                msg += "\n" + erreur;
+            }
+            Alert alert = new Alert(AlertType.ERROR, msg, ButtonType.OK);
+            alert.showAndWait();
+        }
+    }
+
     private void validateEvent(Evenement eventSelected) {
-        mController.validateEvenement(eventSelected);
+        try {
+            mController.validateEvenement(eventSelected);
+            Alert alert = new Alert(AlertType.INFORMATION, "Ajout de l'évènement dans le calendrier CTR", ButtonType.OK);
+            alert.showAndWait();
+
+        } catch (IOException e) {
+            mLogger.error("Probleme durant l'ajout de l'evenement dans le calendrier CTR", e);
+            Alert alert = new Alert(AlertType.ERROR, "Problème durant l'ajout de l'évènement dans le calendrier CTR", ButtonType.OK);
+            alert.showAndWait();
+        }
     }
 
     private void modifiyEvenement(Evenement eventSelected) {

@@ -43,9 +43,10 @@ public class MailServices {
         email.setHtmlMsg(MessageFormat.format(htmlValidationMsg, cid, event.getType().getName(), DATE_FORMAT.format(event.getDateDemande()), DATE_FORMAT.format(event.getDateDebut()),
                 DATE_FORMAT.format(event.getDateFin()), event.getOrganisateur().getName(), DATE_FORMAT.format(event.getDateValidation()), cidSign));
         email.setTextMsg(MessageFormat.format("Validation de la demande de {0}", event.getType().getName()));
-        email.addTo(/* event.getContact() */"jluc.blennie@gmail.com");
+        email.addTo(event.getContact());
         // if (event.getPartenaire() != null)
-        // email.addCc(event.get);
+        email.addCc("pdtctr@ctrbpl.org");
+        email.addCc("website@ctrbpl.org");
         email.send();
     }
 }

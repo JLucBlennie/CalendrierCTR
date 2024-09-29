@@ -24,8 +24,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jluc.ctr.tools.calendrier.model.Evenement;
 import org.jluc.ctr.tools.calendrier.model.TypeActivite;
 
@@ -50,7 +55,9 @@ public class CalendarServices {
     // Calendrier - 16 - planning.ctrbpl@gmail.com
     private static CalendarServices mInstance;
 
-    private List<CalendarListEntry> mCalendarList;
+    private Map<TypeCalendar, CalendarListEntry> mCalendarList;
+
+    private Logger mLogger = LogManager.getLogger(CalendarServices.class);
 
     /**
      * Application name.
@@ -72,6 +79,8 @@ public class CalendarServices {
     private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR_READONLY);
     private static final String CREDENTIALS_FILE_PATH = "/resources/credentials.json";
 
+    private Calendar mService;
+
     public static CalendarServices getInstance() {
         if (mInstance == null) {
             mInstance = new CalendarServices();
@@ -83,17 +92,65 @@ public class CalendarServices {
         // Build a new authorized API client service.
         try {
             NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-            Calendar service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT)).setApplicationName(APPLICATION_NAME).build();
-            CalendarList calendarList = service.calendarList().list().execute();
-            mCalendarList = calendarList.getItems();
-            int i = 1;
-            for (CalendarListEntry calendar : mCalendarList) {
-                System.out.println("Calendrier - " + i + " - " + calendar.getSummary());
-                i++;
+            mService = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT)).setApplicationName(APPLICATION_NAME).build();
+            CalendarList calendarList = mService.calendarList().list().execute();
+            mCalendarList = new HashMap<TypeCalendar, CalendarListEntry>();
+            // int i = 1;
+            for (CalendarListEntry calendar : calendarList.getItems()) {
+                // System.out.println("Calendrier - " + i + " - " +
+                // calendar.getSummary());
+                // Ici il faut stocker les calendrier en fonction des activites
+                String summary = calendar.getSummary();
+                if (summary.equalsIgnoreCase(TypeCalendar.CTR.name())) {
+                    mCalendarList.put(TypeCalendar.CTR, calendar);
+                } else if (summary.equalsIgnoreCase(TypeCalendar.TIV.name())) {
+                    mCalendarList.put(TypeCalendar.TIV, calendar);
+                } else if (summary.equalsIgnoreCase(TypeCalendar.RECYCLEUR.name())) {
+                    mCalendarList.put(TypeCalendar.RECYCLEUR, calendar);
+                } else if (summary.equalsIgnoreCase(TypeCalendar.MF2.name())) {
+                    mCalendarList.put(TypeCalendar.MF2, calendar);
+                } else if (summary.equalsIgnoreCase(TypeCalendar.MODULE_20_40.name())) {
+                    mCalendarList.put(TypeCalendar.MODULE_20_40, calendar);
+                } else if (summary.equalsIgnoreCase(TypeCalendar.ANTEOR.name())) {
+                    mCalendarList.put(TypeCalendar.ANTEOR, calendar);
+                } else if (summary.equalsIgnoreCase(TypeCalendar.GP_N4.name())) {
+                    mCalendarList.put(TypeCalendar.GP_N4, calendar);
+                } else if (summary.equalsIgnoreCase(TypeCalendar.RIFA.name())) {
+                    mCalendarList.put(TypeCalendar.RIFA, calendar);
+                } else if (summary.equalsIgnoreCase(TypeCalendar.TSI.name())) {
+                    mCalendarList.put(TypeCalendar.TSI, calendar);
+                } else if (summary.equalsIgnoreCase(TypeCalendar.HANDI.name())) {
+                    mCalendarList.put(TypeCalendar.HANDI, calendar);
+                } else if (summary.equalsIgnoreCase(TypeCalendar.MF1.name())) {
+                    mCalendarList.put(TypeCalendar.MF1, calendar);
+                } else if (summary.equalsIgnoreCase(TypeCalendar.MODULE_6_20.name())) {
+                    mCalendarList.put(TypeCalendar.MODULE_6_20, calendar);
+                } else if (summary.equalsIgnoreCase(TypeCalendar.INITIATEUR.name())) {
+                    mCalendarList.put(TypeCalendar.INITIATEUR, calendar);
+                } else if (summary.equalsIgnoreCase(TypeCalendar.TEK.name())) {
+                    mCalendarList.put(TypeCalendar.TEK, calendar);
+                }
+                // i++;
             }
+            // List the next 10 events from the primary calendar.
+            // DateTime now = new DateTime(0);
+            // Events events =
+            // service.events().list(mCalendarList.get(8).getId()).setMaxResults(10).setTimeMin(now).setOrderBy("startTime").setSingleEvents(true).execute();
+            // List<Event> items = events.getItems();
+            // if (items.isEmpty()) {
+            // System.out.println("No upcoming events found.");
+            // } else {
+            // System.out.println("Upcoming events");
+            // for (Event event : items) {
+            // DateTime start = event.getStart().getDateTime();
+            // if (start == null) {
+            // start = event.getStart().getDate();
+            // }
+            // System.out.printf("%s (%s)\n", event.getSummary(), start);
+            // }
+            // }
         } catch (GeneralSecurityException | IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            mLogger.error("Problem during calendar retrieving", e);
         }
     }
 
@@ -118,25 +175,69 @@ public class CalendarServices {
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH))).setAccessType("offline").build();
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-        Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("planning.ctrbpl@gmail.com");
+        Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("jluc.blennie@gmail.com");
         // returns an authorized Credential object.
         return credential;
     }
 
-    public void addEvent(Evenement event) {
+    public void addEvent(Evenement event) throws IOException {
         TypeActivite activite = event.getType().getActivite();
+        String typeEvenement = event.getType().getName();
+        String description = "Organisateur : " + event.getOrganisateur().getName() + "\n" + "\r\n" + "Contact : pdtctr@ctrbpl.org\r\n" + event.getContact();
+        Event eventCalendar = createEvent(typeEvenement + " - " + event.getOrganisateur().getName(), event.getLieu(), description, event.getDateDebut(), event.getDateFin());
+        String calendarId = mCalendarList.get(TypeCalendar.CTR).getId();
 
+        switch (activite) {
+            case ALL:
+                break;
+            case N4_GP:
+                calendarId = mCalendarList.get(TypeCalendar.GP_N4).getId();
+                break;
+            case INITIATEUR:
+                if (typeEvenement.equalsIgnoreCase("Module 6-20"))
+                    calendarId = mCalendarList.get(TypeCalendar.MODULE_6_20).getId();
+                else if (typeEvenement.equalsIgnoreCase("Module 20-40"))
+                    calendarId = mCalendarList.get(TypeCalendar.MODULE_20_40).getId();
+                else
+                    calendarId = mCalendarList.get(TypeCalendar.INITIATEUR).getId();
+                break;
+            case TSI:
+                calendarId = mCalendarList.get(TypeCalendar.INITIATEUR).getId();
+                break;
+            case MF1:
+                calendarId = mCalendarList.get(TypeCalendar.MF1).getId();
+                break;
+            case MF2:
+                calendarId = mCalendarList.get(TypeCalendar.MF2).getId();
+                break;
+            case TIV:
+                calendarId = mCalendarList.get(TypeCalendar.TIV).getId();
+                break;
+            case SECOURISME:
+                if (typeEvenement.equalsIgnoreCase("ANTEOR"))
+                    calendarId = mCalendarList.get(TypeCalendar.ANTEOR).getId();
+                else
+                    calendarId = mCalendarList.get(TypeCalendar.RIFA).getId();
+                break;
+            case HANDISUB:
+                calendarId = mCalendarList.get(TypeCalendar.HANDI).getId();
+                break;
+            default:
+                break;
+
+        }
+        mService.events().insert(calendarId, eventCalendar);
     }
 
-    private Event createEvent() {
-        Event event = new Event().setSummary("Google I/O 2015").setLocation("800 Howard St., San Francisco, CA 94103").setDescription("A chance to hear more about Google's developer products.");
+    private Event createEvent(String titre, String location, String description, Date startDate, Date endDate) {
+        Event event = new Event().setSummary(titre).setLocation(location).setDescription(description);
 
-        DateTime startDateTime = new DateTime("2015-05-28T09:00:00-07:00");
-        EventDateTime start = new EventDateTime().setDateTime(startDateTime).setTimeZone("America/Los_Angeles");
+        DateTime startDateTime = new DateTime(startDate);
+        EventDateTime start = new EventDateTime().setDateTime(startDateTime).setTimeZone("Europe/Paris");
         event.setStart(start);
 
-        DateTime endDateTime = new DateTime("2015-05-28T17:00:00-07:00");
-        EventDateTime end = new EventDateTime().setDateTime(endDateTime).setTimeZone("America/Los_Angeles");
+        DateTime endDateTime = new DateTime(endDate);
+        EventDateTime end = new EventDateTime().setDateTime(endDateTime).setTimeZone("Europe/Paris");
         event.setEnd(end);
 
         return event;

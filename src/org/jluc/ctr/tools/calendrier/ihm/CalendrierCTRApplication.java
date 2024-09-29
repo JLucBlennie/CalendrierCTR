@@ -89,6 +89,7 @@ public class CalendrierCTRApplication extends Application {
         // mCtrl.initEvenementsListe();
         notifyPreloader(new ProgressNotification(1));
         this.notifyPreloader(new StateChangeNotification(null));
+        mCtrl.manageErrors();
     }
 
     @Override

@@ -20,6 +20,7 @@ public class Calendrier {
     public List<Moniteur> MONITEURS = new ArrayList<Moniteur>();
     public List<TypeEvenement> TYPES_EVENEMENT = new ArrayList<TypeEvenement>();
     public List<ClubStructure> CLUBSTRUCTURES = new ArrayList<ClubStructure>();
+    public List<String> ERRORS = new ArrayList<String>();
 
     private static Calendrier mInstance;
 
@@ -44,6 +45,7 @@ public class Calendrier {
         // Récupération des évènements à partir de Forms
         mLogger.debug("Chargement depuis FORMS...");
         List<Evenement> events = FormsAccessService.getEventsFromGoogleForms();
+        ERRORS = FormsAccessService.getErrors();
         for (Evenement eventForms : events) {
             if (addEvent(eventForms)) {
                 res++;

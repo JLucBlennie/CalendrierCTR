@@ -18,6 +18,7 @@ import org.jluc.ctr.tools.calendrier.model.Moniteur;
 import org.jluc.ctr.tools.calendrier.model.Status;
 import org.jluc.ctr.tools.calendrier.model.TypeEvenement;
 import org.jluc.ctr.tools.calendrier.tools.bdd.DatabaseService;
+import org.jluc.ctr.tools.calendrier.tools.google.calendar.CalendarServices;
 import org.jluc.ctr.tools.calendrier.tools.mail.MailServices;
 
 import javafx.application.Preloader.ProgressNotification;
@@ -111,7 +112,7 @@ public class CalendrierCTRController {
         return mModel;
     }
 
-    public void validateEvenement(Evenement eventSelected) {
+    public void validateEvenement(Evenement eventSelected) throws IOException {
         // TODO Faire la mise à jour de l'event + l'envoie du mail + la creation
         // du GoogleCalendar
         eventSelected.setDateValidation(TODAY);
@@ -124,5 +125,13 @@ public class CalendrierCTRController {
         }
 
         mLogger.debug("eMail de validation envoyé");
+
+        mLogger.debug("Préparation de l'ajout de l'evenement dans les calendriers");
+        CalendarServices.getInstance().addEvent(eventSelected);
+        mLogger.debug("evenement ajoute dans le calendrier");
+    }
+
+    public void manageErrors() {
+        mFXController.manageErrors();
     }
 }
