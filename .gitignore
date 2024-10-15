@@ -6,3 +6,4 @@ build
 /app/logs
 /app/data
 /app/database
+bin
