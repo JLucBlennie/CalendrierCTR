@@ -1,0 +1,24 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CalendrierCTRApplication",
+            "request": "launch",
+            "mainClass": "org.jluc.ctr.tools.calendrier.ihm.CalendrierCTRApplication",
+            "projectName": "app",
+            "cwd": "${workspaceFolder}/app"
+        },
+        {
+            "type": "java",
+            "name": "CalendarServices",
+            "request": "launch",
+            "mainClass": "org.jluc.ctr.tools.calendrier.tools.google.calendar.CalendarServices",
+            "projectName": "app",
+            "cwd": "${workspaceFolder}/app"
+        }
+    ]
+}
