@@ -66,8 +66,8 @@ public class Calendrier {
 
     public boolean deleteEvent(Evenement event) {
         if (isEventInCalendrier(event.getUUID())) {
-            mEvents.remove(event);
-            mDeletedEvents.add(event);
+            event.setStatut(Status.SUPPRIME);
+//            mDeletedEvents.add(event);
             mLogger.debug("Evenement supprime... " + event);
             return true;
         }

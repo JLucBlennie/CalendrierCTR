@@ -40,7 +40,7 @@ public class MailServices {
         // set the html message
         email.setHtmlMsg(MessageFormat.format(htmlValidationMsg, cid, event.getType().getName(),
                 DATE_FORMAT.format(event.getDateDemande()), DATE_FORMAT.format(event.getDateDebut()),
-                DATE_FORMAT.format(event.getDateFin()), event.getOrganisateur().getName(),
+                DATE_FORMAT.format(event.getDateFin()), event.getDemandeur().getName(),
                 DATE_FORMAT.format(event.getDateValidation())));
         email.setTextMsg(MessageFormat.format("Validation de la demande de {0}", event.getType().getName()));
         email.addTo(event.getContact());

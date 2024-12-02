@@ -75,12 +75,12 @@ public class FormsAccessService {
                     Date dateDemande = DATE_TIME_FORMAT.parse(record.get(0));
                     Date dateDebut = DATE_FORMAT.parse(record.get(5));
                     Date dateFin = DATE_FORMAT.parse(record.get(6));
-                    String demandeur = record.get(7).isEmpty() ? record.get(8) : record.get(7);
-                    String partenaire = record.get(9);
-                    String lieu = record.get(10);
+                    String demandeur = record.get(8).isEmpty() ? record.get(9) : record.get(8);
+                    String partenaire = record.get(10);
+                    String lieu = record.get(11);
                     String activite = record.get(4);
                     String mail = record.get(1);
-                    String organisateur = record.get(11).isEmpty() ? demandeur : record.get(11);
+                    String organisateur = record.get(12).isEmpty() ? demandeur : record.get(12);
 
                     events.add(new Evenement(dateDemande, dateDebut, dateFin, activite, demandeur, partenaire, mail, lieu, organisateur, ""));
                 } catch (ParseException e) {

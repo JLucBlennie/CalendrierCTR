@@ -99,7 +99,8 @@
                      <children>
                         <TableView fx:id="mEventTableView" prefHeight="666.0" prefWidth="652.0" VBox.vgrow="ALWAYS">
                           <columns>
-                            <TableColumn fx:id="mTypeColumn" prefWidth="123.0" text="Type" />
+                              <TableColumn fx:id="mStatutColumn" text="Statut" />
+                              <TableColumn fx:id="mTypeColumn" prefWidth="123.0" text="Type" />
                               <TableColumn fx:id="mDemandeurColumn" prefWidth="156.0" text="Demandeur" />
                               <TableColumn fx:id="mDateDebutColumn" text="Début" />
                               <TableColumn fx:id="mDateFinColumn" text="Fin" />

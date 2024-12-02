@@ -7,3 +7,4 @@ build
 /app/data
 /app/database
 bin
+.idea

@@ -20,6 +20,7 @@ import org.jluc.ctr.tools.calendrier.model.ClubStructure;
 import org.jluc.ctr.tools.calendrier.model.Demandeur;
 import org.jluc.ctr.tools.calendrier.model.Evenement;
 import org.jluc.ctr.tools.calendrier.model.Moniteur;
+import org.jluc.ctr.tools.calendrier.model.Status;
 import org.jluc.ctr.tools.calendrier.model.TypeActivite;
 
 import javafx.collections.FXCollections;
@@ -115,6 +116,9 @@ public class CalendrierCTRFXController {
     private TableColumn<Evenement, String> mDemandeurColumn;
 
     @FXML
+    private TableColumn<Evenement, String> mStatutColumn;
+
+    @FXML
     private TableColumn<Evenement, String> mLieuColumn;
 
     @FXML
@@ -151,11 +155,12 @@ public class CalendrierCTRFXController {
         ObservableList<Evenement> data = FXCollections.observableArrayList(model.getEventsList());
         FilteredList<Evenement> filteredEvents = new FilteredList<>(data, evenement -> {
             Date today = new Date();
-            return evenement.getDateDebut().after(today);
+            return evenement.getDateDebut().after(today) && evenement.getStatut() != Status.SUPPRIME;
         });
         SortedList<Evenement> sortedEvents = new SortedList<>(filteredEvents);
         sortedEvents.comparatorProperty().bind(mEventTableView.comparatorProperty());
         mTypeColumn.setCellValueFactory(new PropertyValueFactory<Evenement, String>("typeFX"));
+        mStatutColumn.setCellValueFactory(new PropertyValueFactory<Evenement, String>("statutFX"));
         mDemandeurColumn.setCellValueFactory(new PropertyValueFactory<Evenement, String>("demandeurFX"));
         mLieuColumn.setCellValueFactory(new PropertyValueFactory<Evenement, String>("lieuFX"));
         mDateDebutColumn.setCellValueFactory(new PropertyValueFactory<Evenement, String>("dateDebutFX"));
@@ -310,6 +315,7 @@ public class CalendrierCTRFXController {
                     ButtonType.OK);
             alert.showAndWait();
         }
+        mEventTableView.refresh();
     }
 
     private void modifiyEvenement(Evenement eventSelected) {
@@ -325,35 +331,37 @@ public class CalendrierCTRFXController {
         eventSelected.setDelegueCTR(mDelegueCTRCmb.getValue());
         eventSelected.setRepCIBPL(mRepCIBPLCmb.getValue());
         eventSelected.setOrganisateur(mOrganisateurCmb.getValue());
+        mEventTableView.refresh();
     }
 
     private void deleteEvenement(Evenement eventSelected) {
         mController.deleteEvenement(eventSelected);
     }
 
-/*     private String getStyleFromType(Evenement evenement) {
-        switch (evenement.getType().getActivite()) {
-            case N4_GP:
-                return "-fx-background-color: #baffba;";
-            case HANDISUB:
-                return "-fx-background-color: #ffd388;";
-            case INITIATEUR:
-                return "-fx-background-color: #ffffba;";
-            case MF1:
-                return "-fx-background-color: #baffff;";
-            case MF2:
-                return "-fx-background-color: #d3ff88;";
-            case SECOURISME:
-                return "-fx-background-color: #88d3ff;";
-            case TIV:
-                return "-fx-background-color: #ba88d3;";
-            case TSI:
-                return "-fx-background-color: #ba88ba;";
-            default:
-                return "";
-        }
-    }
- */
+    /*
+     * private String getStyleFromType(Evenement evenement) {
+     * switch (evenement.getType().getActivite()) {
+     * case N4_GP:
+     * return "-fx-background-color: #baffba;";
+     * case HANDISUB:
+     * return "-fx-background-color: #ffd388;";
+     * case INITIATEUR:
+     * return "-fx-background-color: #ffffba;";
+     * case MF1:
+     * return "-fx-background-color: #baffff;";
+     * case MF2:
+     * return "-fx-background-color: #d3ff88;";
+     * case SECOURISME:
+     * return "-fx-background-color: #88d3ff;";
+     * case TIV:
+     * return "-fx-background-color: #ba88d3;";
+     * case TSI:
+     * return "-fx-background-color: #ba88ba;";
+     * default:
+     * return "";
+     * }
+     * }
+     */
     private void fillEventEditor(Calendrier model, Evenement eventSelected) {
         mEventEditorPane.setVisible(true);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");

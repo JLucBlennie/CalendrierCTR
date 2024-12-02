@@ -193,7 +193,7 @@ public class CalendarServices {
     public boolean addEvent(Evenement event) throws IOException {
         TypeActivite activite = event.getType().getActivite();
         String typeEvenement = event.getType().getName();
-        String description = "Organisateur : " + event.getOrganisateur().getName() + "\n" + "\r\n"
+        String description = "Organisateur : " + event.getDemandeur().getName() + "\n" + "\r\n"
                 + "Contact : pdtctr@ctrbpl.org\r\n" + event.getContact();
 
         String calendarId = mCalendarList.get(TypeCalendar.CTR).getId();
@@ -247,7 +247,7 @@ public class CalendarServices {
             return false;
         } else {
             mLogger.debug("Event a creer...");
-            Event eventCalendar = createEvent(typeEvenement + " - " + event.getOrganisateur().getName(),
+            Event eventCalendar = createEvent(typeEvenement + " - " + event.getDemandeur().getName(),
                     event.getLieu(),
                     description, event.getDateDebut(), event.getDateFin());
 

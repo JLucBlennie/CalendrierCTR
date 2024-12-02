@@ -49,6 +49,7 @@ public class Evenement implements Comparable<Evenement> {
     private String mCalendarEventId;
 
     private SimpleStringProperty typeFX;
+    private SimpleStringProperty statutFX;
     private SimpleStringProperty demandeurFX;
     private SimpleStringProperty lieuFX;
     private SimpleStringProperty dateDebutFX;
@@ -67,6 +68,7 @@ public class Evenement implements Comparable<Evenement> {
         mComment = comment;
         demandeurFX = new SimpleStringProperty(mDemandeur.toString());
         typeFX = new SimpleStringProperty(mType.toString());
+        statutFX = new SimpleStringProperty(mStatut.toString());
         dateFinFX = new SimpleStringProperty(CalendrierCTRController.DATE_FORMAT_TO_DISPLAY.format(mDateFin));
         dateDebutFX = new SimpleStringProperty(CalendrierCTRController.DATE_FORMAT_TO_DISPLAY.format(mDateDebut));
         lieuFX = new SimpleStringProperty(mLieu);
@@ -90,6 +92,7 @@ public class Evenement implements Comparable<Evenement> {
         mOrganisateur = organisateur;
         demandeurFX = new SimpleStringProperty(mDemandeur.toString());
         typeFX = new SimpleStringProperty(mType.toString());
+        statutFX = new SimpleStringProperty(mStatut.toString());
         dateFinFX = new SimpleStringProperty(CalendrierCTRController.DATE_FORMAT_TO_DISPLAY.format(mDateFin));
         dateDebutFX = new SimpleStringProperty(CalendrierCTRController.DATE_FORMAT_TO_DISPLAY.format(mDateDebut));
         lieuFX = new SimpleStringProperty(mLieu);
@@ -114,6 +117,7 @@ public class Evenement implements Comparable<Evenement> {
         mOrganisateur = organisateur;
         demandeurFX = new SimpleStringProperty(mDemandeur.toString());
         typeFX = new SimpleStringProperty(mType.toString());
+        statutFX = new SimpleStringProperty(mStatut.toString());
         dateFinFX = new SimpleStringProperty(CalendrierCTRController.DATE_FORMAT_TO_DISPLAY.format(mDateFin));
         dateDebutFX = new SimpleStringProperty(CalendrierCTRController.DATE_FORMAT_TO_DISPLAY.format(mDateDebut));
         lieuFX = new SimpleStringProperty(mLieu);
@@ -135,6 +139,7 @@ public class Evenement implements Comparable<Evenement> {
         mOrganisateur = Calendrier.getInstance().findClubStructure(organisateur);
         demandeurFX = new SimpleStringProperty(mDemandeur.toString());
         typeFX = new SimpleStringProperty(mType.toString());
+        statutFX = new SimpleStringProperty(mStatut.toString());
         dateFinFX = new SimpleStringProperty(CalendrierCTRController.DATE_FORMAT_TO_DISPLAY.format(mDateFin));
         dateDebutFX = new SimpleStringProperty(CalendrierCTRController.DATE_FORMAT_TO_DISPLAY.format(mDateDebut));
         lieuFX = new SimpleStringProperty(mLieu);
@@ -398,6 +403,10 @@ public class Evenement implements Comparable<Evenement> {
         return typeFX.get();
     }
 
+    public String getStatutFX() {
+        return statutFX.get();
+    }
+
     public String getDemandeurFX() {
         return demandeurFX.get();
     }
@@ -416,6 +425,10 @@ public class Evenement implements Comparable<Evenement> {
 
     public void setTypeFX(String typeFX) {
         this.typeFX.set(typeFX);
+    }
+
+    public void setStatutFX(String statutFX) {
+        this.statutFX.set(statutFX);
     }
 
     public void setDemandeurFX(String demandeurFX) {
