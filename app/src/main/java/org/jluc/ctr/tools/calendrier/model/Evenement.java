@@ -337,6 +337,7 @@ public class Evenement implements Comparable<Evenement> {
      */
     public void setStatut(Status mStatut) {
         this.mStatut = mStatut;
+        statutFX.set(mStatut.name()); 
         mIsModified = true;
     }
 
