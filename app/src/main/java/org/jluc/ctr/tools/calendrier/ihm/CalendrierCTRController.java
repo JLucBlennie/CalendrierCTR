@@ -44,12 +44,20 @@ public class CalendrierCTRController {
     private CalendrierCTRFXController mFXController;
 
     private DatabaseService mDatabaseService;
-    private String mBDDPath = CalendrierCTRApplication.DICO_PROPERTIES.getString("app.bdd.path");
+    private String mBDDPath = CalendrierCTRApplication.DICO_PROPERTIES.getString("app.bdd.jdbc.url");
+    private String mBDDUser = CalendrierCTRApplication.DICO_PROPERTIES.getString("app.bdd.user");
+    private String mBDDPassword = CalendrierCTRApplication.DICO_PROPERTIES.getString("app.bdd.password");
 
     public CalendrierCTRController() throws ClassNotFoundException, SQLException, IOException {
-        File dbFile = new File(mBDDPath);
-        boolean needToCreateBDD = !dbFile.exists();
-        mDatabaseService = new DatabaseService(mBDDPath);
+        // TODO : Il faudrait faire ça dans le DatabaseService
+        boolean needToCreateBDD = false;
+        if (mBDDPath.contains("sqlite")) {
+            Class.forName(org.sqlite.JDBC.class.getName());
+            File dbFile = new File(mBDDPath.replace("jdbc:sqlite:", ""));
+            needToCreateBDD = !dbFile.exists();
+        }
+        mDatabaseService = new DatabaseService(mBDDPath, mBDDUser, mBDDPassword);
+        // TODO : Il faudrait faire ça dans le DatabaseService
         if (needToCreateBDD) {
             // Creation des tables
             // Table Evenements

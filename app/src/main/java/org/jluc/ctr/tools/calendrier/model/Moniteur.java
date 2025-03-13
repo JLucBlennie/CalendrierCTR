@@ -122,28 +122,38 @@ public class Moniteur {
 
     public String getColumnNames() {
         StringBuilder res = new StringBuilder();
+        res.append("\"");
         res.append(UUID_COL_NAME);
-        res.append(",");
+        res.append("\",\"");
         res.append(FIRSTNAME_COL_NAME);
-        res.append(",");
+        res.append("\",\"");
         res.append(LASTNAME_COL_NAME);
-        res.append(",");
+        res.append("\",\"");
         res.append(NIVEAU_COL_NAME);
+        res.append("\"");
         return res.toString();
     }
 
     public String getColumnNamesForUpdate() {
         StringBuilder res = new StringBuilder();
+        res.append("\"");
         res.append(UUID_COL_NAME);
+        res.append("\"");
         res.append("=?");
         res.append(",");
+        res.append("\"");
         res.append(FIRSTNAME_COL_NAME);
+        res.append("\"");
         res.append("=?");
         res.append(",");
+        res.append("\"");
         res.append(LASTNAME_COL_NAME);
+        res.append("\"");
         res.append("=?");
         res.append(",");
+        res.append("\"");
         res.append(NIVEAU_COL_NAME);
+        res.append("\"");
         res.append("=?");
         return res.toString();
     }

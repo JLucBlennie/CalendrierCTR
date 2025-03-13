@@ -30,8 +30,8 @@ public class DatabaseService {
     /**
      * Constructeur.
      * 
-     * @param databasePath
-     *                     Chemin du fichier de base de données
+     * @param databaseURL
+     *                    Chemin du fichier de base de données
      * @throws ClassNotFoundException
      *                                Erreur de chargement de la library sqlite
      * @throws SQLException
@@ -39,36 +39,41 @@ public class DatabaseService {
      * @throws IOException
      *                                Erreur d'accés au fichier
      */
-    public DatabaseService(final String databasePath) throws ClassNotFoundException, SQLException, IOException {
-        Class.forName(org.sqlite.JDBC.class.getName());
-        File dbFile = new File(databasePath);
-        if (!dbFile.exists()) {
-            if (!dbFile.getParentFile().exists()) {
-                if (dbFile.getParentFile().mkdirs()) {
-                    mLogger.debug("Chemin de la base de données créé ==> " + dbFile.getParentFile().getAbsolutePath());
-                    dbFile.createNewFile();
-                } else {
-                    mLogger.error(
-                            "Chemin de la base de données NON créé ==> " + dbFile.getParentFile().getAbsolutePath());
+    public DatabaseService(final String databaseURL, String user, String password)
+            throws ClassNotFoundException, SQLException, IOException {
+        if (databaseURL.contains("sqlite")) {
+            Class.forName(org.sqlite.JDBC.class.getName());
+            File dbFile = new File(databaseURL.replace("jdbc:sqlite:", ""));
+            if (!dbFile.exists()) {
+                if (!dbFile.getParentFile().exists()) {
+                    if (dbFile.getParentFile().mkdirs()) {
+                        mLogger.debug(
+                                "Chemin de la base de données créé ==> " + dbFile.getParentFile().getAbsolutePath());
+                        dbFile.createNewFile();
+                    } else {
+                        mLogger.error(
+                                "Chemin de la base de données NON créé ==> "
+                                        + dbFile.getParentFile().getAbsolutePath());
+                    }
                 }
             }
         }
-        startService(databasePath);
+        startService(databaseURL, user, password);
     }
 
     public final void dropTable(final String tableName) throws SQLException {
         mLogger.debug("dropTable : " + "drop table if exists " + tableName);
-        mConnection.createStatement().execute("drop table if exists " + tableName);
+        mConnection.createStatement().execute("drop table if exists \"" + tableName + "\"");
     }
 
     public final void createTable(final String tableName, final String attributesDefinition) throws SQLException {
-        mLogger.debug("createTable : " + "create table " + tableName + attributesDefinition);
+        mLogger.debug("createTable : " + "create table \"" + tableName + "\"" + attributesDefinition);
         mConnection.createStatement().executeUpdate("create table " + tableName + attributesDefinition);
     }
 
     public final void insertData(final String tableName, final String sqlColNames, final String sqlValues,
             List<String> types, List<Object> values) throws SQLException {
-        String sql = "insert into " + tableName + "(" + sqlColNames + ") values(" + sqlValues + ")";
+        String sql = "insert into \"" + tableName + "\"(" + sqlColNames + ") values(" + sqlValues + ")";
 
         try {
             PreparedStatement pstmt = mConnection.prepareStatement(sql);
@@ -112,7 +117,7 @@ public class DatabaseService {
 
     public final void updateData(final String tableName, final String sqlSet, String whereClause, List<String> types,
             List<Object> values) throws SQLException {
-        String sql = "UPDATE " + tableName + " SET " + sqlSet + " WHERE " + whereClause;
+        String sql = "UPDATE \"" + tableName + "\" SET " + sqlSet + " WHERE " + whereClause;
 
         try {
             PreparedStatement pstmt = mConnection.prepareStatement(sql);
@@ -155,11 +160,11 @@ public class DatabaseService {
     }
 
     public final List<Map<String, Object>> executeSelectFrom(final String tableName) throws SQLException {
-        mLogger.debug("executeSelectFrom : " + "select * from " + tableName);
+        mLogger.debug("executeSelectFrom : " + "select * from \"" + tableName + "\"");
         Statement statement = mConnection.createStatement();
         List<Map<String, Object>> results = null;
         try {
-            results = map(statement.executeQuery("select * from " + tableName));
+            results = map(statement.executeQuery("select * from \"" + tableName + "\""));
         } catch (SQLException e) {
             throw e;
         } finally {
@@ -170,11 +175,11 @@ public class DatabaseService {
 
     public final List<Map<String, Object>> executeSelectFromWhere(final String tableName, final String whereClause)
             throws SQLException {
-        mLogger.debug("executeSelectFromWhere : " + "select * from " + tableName + " where " + whereClause);
+        mLogger.debug("executeSelectFromWhere : " + "select * from \"" + tableName + "\" where " + whereClause);
         Statement statement = mConnection.createStatement();
         List<Map<String, Object>> results = null;
         try {
-            results = map(statement.executeQuery("select * from " + tableName + " where " + whereClause));
+            results = map(statement.executeQuery("select * from \"" + tableName + "\" where " + whereClause));
         } catch (SQLException e) {
             throw e;
         } finally {
@@ -207,8 +212,8 @@ public class DatabaseService {
     }
 
     public final void deleteDataWhere(final String tableName, final String whereClause) throws SQLException {
-        mLogger.debug("deleteDataWhere : " + "delete from " + tableName + " where " + whereClause);
-        mConnection.createStatement().executeUpdate("delete from " + tableName + " where " + whereClause);
+        mLogger.debug("deleteDataWhere : " + "delete from \"" + tableName + "\" where " + whereClause);
+        mConnection.createStatement().executeUpdate("delete from \"" + tableName + "\" where " + whereClause);
     }
 
     public final void endService() throws SQLException {
@@ -217,11 +222,12 @@ public class DatabaseService {
         }
     }
 
-    public final void startService(String databasePath) throws SQLException { // create
-                                                                              // a
-                                                                              // database
-                                                                              // connection
-        mConnection = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
+    public final void startService(String databaseURL, String user, String password) throws SQLException {
+        // create a database connection
+        if (user == null)
+            mConnection = DriverManager.getConnection(databaseURL);
+        else
+            mConnection = DriverManager.getConnection(databaseURL, user, password);
     }
 
     public void beginTransaction() throws SQLException {

@@ -27,6 +27,7 @@ dependencies {
 	implementation("org.apache.commons:commons-csv:1.12.0")
 	implementation("org.apache.commons:commons-email:1.6.0")
   	implementation("org.xerial:sqlite-jdbc:3.34.0")
+    implementation("org.postgresql:postgresql:42.6.0")
     implementation("org.apache.logging.log4j:log4j-core:2.24.1")
     implementation("org.apache.logging.log4j:log4j-api:2.24.1")
     implementation("com.google.api-client:google-api-client:2.0.0")

@@ -104,23 +104,31 @@ public class Demandeur {
 
     public String getColumnNames() {
         StringBuilder res = new StringBuilder();
+        res.append("\"");
         res.append(UUID_COL_NAME);
-        res.append(",");
+        res.append("\",\"");
         res.append(NAME_COL_NAME);
-        res.append(",");
+        res.append("\",\"");
         res.append(NUMEROSTRUCTURE_COL_NAME);
+        res.append("\"");
         return res.toString();
     }
 
     public String getColumnNamesForUpdate() {
         StringBuilder res = new StringBuilder();
+        res.append("\"");
         res.append(UUID_COL_NAME);
+        res.append("\"");
         res.append("=?");
         res.append(",");
+        res.append("\"");
         res.append(NAME_COL_NAME);
+        res.append("\"");
         res.append("=?");
         res.append(",");
+        res.append("\"");
         res.append(NUMEROSTRUCTURE_COL_NAME);
+        res.append("\"");
         res.append("=?");
         return res.toString();
     }
