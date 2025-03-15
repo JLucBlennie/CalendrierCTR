@@ -11,4 +11,4 @@ plugins {
 }
 
 rootProject.name = "CalendrierCTR"
-include("app")
+include("calendrierctr")
