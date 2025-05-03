@@ -238,7 +238,7 @@ public class Calendrier {
             } else if (moniteur.isModified()) {
                 // On fait un Update
                 databaseService.updateData(CalendrierCTRController.TABLE_MONITEURS, moniteur.getColumnNamesForUpdate(),
-                        Moniteur.UUID_COL_NAME + "='" + moniteur.getUUID() + "'", moniteur.getTypesForSQL(),
+                        "\""+Moniteur.UUID_COL_NAME + "\"='" + moniteur.getUUID() + "'", moniteur.getTypesForSQL(),
                         moniteur.getValueForSQL());
             }
             // Sinon on ne fait rien
@@ -252,7 +252,7 @@ public class Calendrier {
             } else if (demandeur.isModified()) {
                 // On fait un Update
                 databaseService.updateData(CalendrierCTRController.TABLE_DEMANDEURS,
-                        demandeur.getColumnNamesForUpdate(), Demandeur.UUID_COL_NAME + "='" + demandeur.getUUID() + "'",
+                        demandeur.getColumnNamesForUpdate(), "\""+Demandeur.UUID_COL_NAME + "\"='" + demandeur.getUUID() + "'",
                         demandeur.getTypesForSQL(), demandeur.getValueForSQL());
             }
             // Sinon on ne fait rien
@@ -266,7 +266,7 @@ public class Calendrier {
             } else if (type.isModified()) {
                 // On fait un Update
                 databaseService.updateData(CalendrierCTRController.TABLE_TYPES, type.getColumnNamesForUpdate(),
-                        TypeEvenement.UUID_COL_NAME + "='" + type.getUUID() + "'", type.getTypesForSQL(),
+                        "\""+TypeEvenement.UUID_COL_NAME + "\"='" + type.getUUID() + "'", type.getTypesForSQL(),
                         type.getValueForSQL());
             }
             // Sinon on ne fait rien
@@ -280,7 +280,7 @@ public class Calendrier {
             } else if (club.isModified()) {
                 // On fait un Update
                 databaseService.updateData(CalendrierCTRController.TABLE_CLUBSTRUCTURE, club.getColumnNamesForUpdate(),
-                        ClubStructure.UUID_COL_NAME + "='" + club.getUUID() + "'", club.getTypesForSQL(),
+                        "\""+ClubStructure.UUID_COL_NAME + "\"='" + club.getUUID() + "'", club.getTypesForSQL(),
                         club.getValueForSQL());
             }
             // Sinon on ne fait rien
@@ -294,7 +294,7 @@ public class Calendrier {
             } else if (evenement.isModified()) {
                 // On fait un Update
                 databaseService.updateData(CalendrierCTRController.TABLE_EVENEMENTS,
-                        evenement.getColumnNamesForUpdate(), Evenement.UUID_COL_NAME + "='" + evenement.getUUID() + "'",
+                        evenement.getColumnNamesForUpdate(), "\""+Evenement.UUID_COL_NAME + "\"='" + evenement.getUUID() + "'",
                         evenement.getTypesForSQL(), evenement.getValueForSQL());
             }
             // Sinon on ne fait rien
@@ -302,7 +302,7 @@ public class Calendrier {
 
         for (Evenement evenement : mDeletedEvents) {
             databaseService.deleteDataWhere(CalendrierCTRController.TABLE_EVENEMENTS,
-                    Evenement.UUID_COL_NAME + "='" + evenement.getUUID() + "'");
+                    "\""+Evenement.UUID_COL_NAME + "\"='" + evenement.getUUID() + "'");
         }
 
     }
