@@ -6,6 +6,22 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MailServices",
+            "request": "launch",
+            "mainClass": "org.jluc.ctr.tools.calendrier.tools.mail.MailServices",
+            "projectName": "CalendrierCTR-calendrierctr"
+        },
+        {
+            "type": "java",
+            "name": "PwdUtils",
+            "request": "launch",
+            "mainClass": "org.jluc.ctr.tools.calendrier.tools.mail.pwd.PwdUtils",
+            "projectName": "CalendrierCTR-calendrierctr",
+            "cwd": "${workspaceFolder}",
+            "args": "planning.ctrbpl@gmail.com Pl0ng3ur29"
+        },
+        {
+            "type": "java",
             "name": "CalendrierCTRApplication",
             "request": "launch",
             "mainClass": "org.jluc.ctr.tools.calendrier.ihm.CalendrierCTRApplication",

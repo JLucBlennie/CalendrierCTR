@@ -194,7 +194,7 @@ public class CalendarServices {
         TypeActivite activite = event.getType().getActivite();
         String typeEvenement = event.getType().getName();
         String description = "Organisateur : " + event.getDemandeur().getName() + "\n" + "\r\n"
-                + "Contact : pdtctr@ctrbpl.org\r\n" + event.getContact();
+                + "Contact : presidente-technique@cibpl.fr\r\n" + event.getContact();
 
         String calendarId = mCalendarList.get(TypeCalendar.CTR).getId();
 

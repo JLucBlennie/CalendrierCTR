@@ -90,7 +90,7 @@ public class PwdUtils {
             list.add(contact);
             PwdUtils.getInstance().writePwdFile(list);
         } else {
-
+            System.out.println("Pas le bon nombre d'arguments : 2 (login, password)");
         }
     }
 }

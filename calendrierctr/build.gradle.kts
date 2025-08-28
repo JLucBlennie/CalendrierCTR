@@ -55,3 +55,17 @@ tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+tasks.register<JavaExec>("pwdutils") {
+    group = "application"
+    description = "Lance la classe utilitaire"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass = "org.jluc.ctr.tools.calendrier.tools.mail.pwd.PwdUtils"
+}
+
+tasks.register<JavaExec>("mailtest") {
+    group = "application"
+    description = "Lance la classe utilitaire"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass = "org.jluc.ctr.tools.calendrier.tools.mail.MailServices"
+}
